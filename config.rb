@@ -46,7 +46,7 @@ activate :blog do |blog|
 end
 
 activate :gh_pages do |gh_pages|
-  gh_pages.remote = 'git@github.com:elementxapps/elementxapps.github.io.git'
+  gh_pages.remote = 'https://github.com/elementxapps/elementxapps.github.io.git'
 end
 
 activate :directory_indexes

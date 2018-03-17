@@ -2,8 +2,284 @@
 
 title: New Post 1
 date: 2018-03-17 10:21 UTC
-tags: 
+tags:
 
 ---
+
+# Sass Basics: The Sass Mixin Directive
+
+### **What Is a Sass Mixin?**
+A mixin allows you to create reusable chunks of CSS. Being able to do this will help you to avoid writing repetitive code. For example:
+```css
+a:link { color: white; }
+a:visited { color: blue; }
+a:hover { color: green; }
+a:active { color: red; }
+```
+
+Writing this code over and over again can get old very quickly, especially if you have a large site with a lot of links. You can create the styles for your links with a Sass mixin like this:
+```css
+@mixin linx ($link, $visit, $hover, $active) {
+  a {
+    color: $link;
+    &:visited {
+      color: $visit;
+    }
+    &:hover {
+      color: $hover;
+    }
+    &:active {
+      color: $active;
+    }
+  }
+}
+```
+### **How to Include a Sass Mixin**
+To make use of a mixin you have to include it in your Sass files. To call the linx mixin from above you would add this line:
+```sass
+@include linx(white, blue, green, red);
+```
+The ```@include``` directive allows you to use mixins within your Sass files.
+### **How to Create a Sass Mixin**
+To create a mixin you use the ```@mixin``` directive. For example:
+```css
+@mixin sample {
+  font-size: 12px;
+}
+```
+You define this directive by using ```@mixin``` followed by the name of the mixin. You can also optionally include arguments in your mixin, like you did with the linx mixin above.
+
+You can also use variables in your mixin, which are defined elsewhere in your Sass files. Let’s say you wanted to use ```$font-base``` as a variable in your mixin. As long as the variable has been defined you can use it in your mixin:
+```css
+$font-base: 12px;
+
+@mixin sample {
+  font-size: $font-base;
+}
+
+p {
+  @include sample;
+}
+```
+The resulting CSS is:
+```css
+p {
+  font-size: 12px;
+}
+```
+### **Arguments in Sass Mixins**
+A mixin can take Sass data values as arguments. These values are specified when you define the mixin and given a specific value when you @include the mixin. The arguments are then passed to the mixin as variables. Arguments are included in a comma separated list enclosed in parentheses after the mixin name:
+```css
+@mixin headline ($color, $size) {
+  color: $color;
+  font-size: $size;
+}
+
+h1 {
+  @include headline(green, 12px);
+}
+```
+This will compile to:
+```css
+h1 {
+  color: green;
+  font-size: 12px;
+}
+```
+When using basic arguments, they have to be called in the order specified in the mixin. In the last example, if you switched the order of arguments when including the mixin, the compiled CSS wouldn’t be valid:
+```css
+h1 {
+  @include headline(12px, green);
+}
+
+h1 {
+  color: 12px;
+  font-size: green;
+}
+```
+As you can see, the mixin just delivers the arguments in the order given, which doesn’t yield the expected CSS code.
+
+You can also pass Sass variables as arguments. For example, let’s say you want to set a ```$base-color``` variable in the above example:
+```css
+$base-color: pink;
+
+@mixin headline($color, $size) {
+  color: $color;
+  font-size: $size;
+}
+
+h1 { @include headline($base-color, 12px);}
+```
+This will compile to:
+```css
+h1 {
+  color: pink;
+  font-size: 12px;
+}
+```
+### **Default Values in Sass Mixins**
+When creating your mixin you can specify default values as arguments. When you include a default value, you can omit passing that value when calling your mixin because Sass will use the default value. For example, if you update the headline mixin from above with a default value like in the code below:
+```css
+@mixin headline($size, $color: red) {
+  color: $color;
+  font-size: $size;
+}
+
+h1 {
+  @include headline(12px);
+}
+
+h1 {
+  @include headline(12px, blue);
+}
+```
+The code compiles as follows:
+```css
+h1 {
+  color: red;
+  font-size: 12px;
+}
+h1 {
+  color: blue;
+  font-size: 12px;
+}
+```
+In the first h1 you only specified a pixel size, so the mixin used the default value of red. In the second example, you provided an explicit color value, blue, thereby replacing the default value red in your ```@include``` directive. Note that you had to change the order of arguments as Sass wants to specify required arguments first. Since the ```$color``` argument has a default value, specifying a color in the @include is optional. You can also specify a variable as a default value:
+```css
+$base-color: orange;
+
+@mixin headline($size, $color: $base-color) {
+  color: $color;
+  font-size: $size;
+}
+```
+### **Keyword Arguments in Sass Mixins**
+You also have the option of including your mixin with keyword arguments. Even if using keyword arguments can make your code less concise, it will improve readability, which is important if someone else will be maintaining the code you have written. You can include keyword arguments in any order, and of course default values can be omitted:
+```css
+@mixin headline($size, $color: red) {
+  color: $color;
+  font-size: $size;
+}
+
+h1 {
+  @include headline($color: blue, $size: 12px);
+}
+```
+This compiles fine even though the arguments are in the wrong order.
+```css
+h1 {
+  color: blue;
+  font-size: 12px;
+}
+```
+### **Variable Arguments in Sass Mixins**
+Sometimes you may need your mixin to accept a number of arguments. For example, the ```padding``` property can have from one to four arguments. In this situation, you could create a mixin that uses variable arguments. Variable arguments allow you to package up arguments as a list. The variable arguments look like regular arguments for a mixin except they add (…) at the end:
+```css
+@mixin pad ($pads...) {
+  padding: $pads;
+}
+
+.one {
+  @include pad(20px);
+}
+.two {
+  @include pad(10px 20px);
+}
+.three {
+  @include pad(10px 20px 40px);
+}
+.four {
+  @include pad(10px 20px 30px 20px);
+}
+```
+The code above compiles to:
+```css
+.one {
+  padding: 20px;
+}
+.two {
+  padding: 10px 20px;
+}
+.three {
+  padding: 10px 20px 40px;
+}
+.four {
+  padding: 10px 20px 30px 20px;
+}
+```
+You can also include regular arguments next to variable arguments. Let’s say you wanted to set a text color in your pad mixin:
+```css
+@mixin pad ($color,$pads...) {
+  color: $color;
+  padding: $pads;
+}
+.four { @include pad(orange, 10px 20px 30px 20px); }
+```
+Which generates
+```css
+.four {
+  color: orange;
+  padding: 10px 20px 30px 20px;
+}
+```
+The regular arguments have to come before the variable arguments. As you can see, the leftover arguments are packaged up and used for the padding values. When including your mixin, you can also use variable arguments. For your arguments, you can draw from a list of values or a map:
+```css
+$box-style1: 5px, solid, red;
+$box-style2: (bStyle: dotted, bColor: blue, bWidth: medium);
+
+@mixin boxy($bWidth, $bStyle, $bColor) {
+  border-width: $bWidth;
+  border-style: $bStyle;
+  border-color: $bColor;
+}
+
+.first {
+  @include boxy($box-style1...);
+}
+
+.second {
+  @include boxy($box-style2...);
+}
+```
+As you can see, you have setup a list and a map to use for your mixin. When using a list, the arguments have to be in the correct order. When using a map, order doesn’t matter because the map values will be treated like keyword arguments. As you can see, the map values are in the wrong order, yet you still end up with correct CSS code:
+```css
+.first {
+  border-width: 5px;
+  border-style: solid;
+  border-color: red;
+}
+
+.second {
+  border-width: medium;
+  border-style: dotted;
+  border-color: blue;
+}
+```
+### **@content**
+Through the ```@content``` directive you are also able to pass a block of styles not defined in the mixin. These additional styles will appear within the mixin where you place ```@content```:
+```css
+@mixin cont {
+  background-color: black;
+  color: white;
+  @content;
+}
+```
+Now, when you call this mixin, you will be able to add any additional properties you’d like to use:
+```css
+div {
+  @include cont {
+    font-size: 12px;
+    font-style: italic;
+  }
+}
+
+div {
+  background-color: black;
+  color: white;
+  font-size: 12px;
+  font-style: italic;
+}
+```
+As you can see, the ```font-size``` and the ```font-style``` added above have been incorporated into the compiled CSS code relating to the div element. The ```@content``` directive allows you to setup base styles and customize as needed.
 
 

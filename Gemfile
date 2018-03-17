@@ -15,6 +15,7 @@ gem 'middleman-blog', '~> 4.0', '>= 4.0.2'
 gem 'middleman-deploy', '~> 2.0.0.pre.alpha'
 gem 'middleman-livereload', '~> 3.4', '>= 3.4.6'
 gem 'middleman-gh_pages', '~> 0.8.0'
+gem 'nokogiri', '~> 1.8', '>= 1.8.2'
 
 gem 'redcarpet', '~> 3.4'
 
