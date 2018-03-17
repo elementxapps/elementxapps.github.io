@@ -49,6 +49,8 @@ activate :gh_pages do |gh_pages|
   gh_pages.remote = 'git@github.com:elementxapps/elementxapps.github.io.git'
 end
 
+activate :directory_indexes
+
 page "/feed.xml", layout: false
 # Reload the browser automatically whenever files change
 # configure :development do
