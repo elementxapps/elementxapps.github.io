@@ -1,6 +1,6 @@
 ---
 
-title: New Post 1
+title: Sass Mixins
 date: 2018-03-17 10:21 UTC
 tags:
 

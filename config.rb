@@ -46,10 +46,14 @@ activate :blog do |blog|
 end
 
 activate :gh_pages do |gh_pages|
-  gh_pages.remote = 'https://github.com/elementxapps/elementxapps.github.io.git'
+  gh_pages.remote = 'git@github.com:elementxapps/elementxapps.github.io.git'
 end
 
 activate :directory_indexes
+
+activate :syntax, :line_numbers => true
+set :markdown_engine, :redcarpet
+set :markdown, :fenced_code_blocks => true, :smartypants => true
 
 page "/feed.xml", layout: false
 # Reload the browser automatically whenever files change
@@ -58,11 +62,11 @@ page "/feed.xml", layout: false
 # end
 
 # Methods defined in the helpers block are available in templates
-# helpers do
-#   def some_helper
-#     "Helping"
-#   end
-# end
+helpers do
+  def strip_summary(html)
+    html.gsub(/<h1>.+<\/h1>/, "")
+  end
+end
 
 # Build-specific configuration
 configure :build do
